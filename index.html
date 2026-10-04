@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homework List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #FFFFFF;
+    --blush: #FFF1F6;
+    --blush-2: #FFD9E6;
+    --pink: #F06A9B;
+    --pink-strong: #D6245F;
+    --berry: #3D1427;
+    --mauve: #86616F;
+    --line: #F2C9D8;
+    --font-head: "Mali", "Leelawadee UI", Tahoma, sans-serif;
+    --font-body: "Mali", "Leelawadee UI", Tahoma, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--paper); color: var(--berry);
+    font-family: var(--font-body); font-size: 17px; line-height: 1.7;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 28px 18px 60px; }
+  h1, h2 { font-family: var(--font-head); font-weight: 700; margin: 0; line-height: 1.35; }
+  h1 { font-size: 2.3rem; }
+  h2 { font-size: 1.25rem; margin-bottom: 12px; }
+  h2::before {
+    content: ""; display: inline-block; width: 20px; height: 20px; margin-right: 8px; vertical-align: -3px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23F06A9B' d='M12 21s-7.5-4.6-9.6-9.3C.9 8.2 3 4.5 6.6 4.5c2 0 3.6 1.1 4.4 2.5.8-1.4 2.4-2.5 4.4-2.5 3.6 0 5.7 3.7 4.2 7.2C19.5 16.4 12 21 12 21z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  .cal-head h2::before { display: none; }
+  h3 { font-size: 1rem; font-weight: 700; margin: 0 0 4px; }
+  p { margin: 0; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--pink-strong); outline-offset: 2px; }
+
+  .top { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 22px; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand h1 { padding-bottom: 10px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='8' viewBox='0 0 20 8'%3E%3Cpath d='M0 4 Q5 0 10 4 T20 4' fill='none' stroke='%23F06A9B' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left bottom; background-size: 20px 8px; }
+  .doodle { flex: none; }
+  .sub { color: var(--mauve); font-size: .95rem; margin-top: 2px; }
+
+  /* ปุ่ม */
+  .btn {
+    border: 2px solid var(--pink-strong); background: var(--pink-strong); color: #fff;
+    border-radius: 999px; padding: 7px 20px; cursor: pointer; font-weight: 700;
+    transition: transform .12s ease, background-color .12s ease;
+  }
+  .btn:hover { background: var(--berry); border-color: var(--berry); transform: translateY(-1px); }
+  .btn:active { transform: translateY(1px); }
+  .btn.ghost { background: transparent; color: var(--berry); border-color: var(--line); font-weight: 400; }
+  .btn.ghost:hover { background: var(--blush); border-color: var(--pink); }
+  .btn.small { padding: 2px 14px; font-size: .9rem; }
+  .btn.danger { color: var(--pink-strong); }
+  .btn[disabled] { opacity: .7; cursor: default; background: transparent; color: var(--mauve); border-color: var(--line); transform: none; }
+
+  /* แท็บ แบบขีดไฮไลต์ */
+  .tabs { display: flex; gap: 14px; flex-wrap: wrap; border-bottom: 3px dotted var(--pink); margin-bottom: 24px; padding-bottom: 8px; }
+  .tab {
+    background: none; border: 0; padding: 1px 10px; cursor: pointer; color: var(--mauve);
+    font-weight: 700; font-size: 1rem; border-radius: 999px;
+  }
+  .tab:hover { color: var(--berry); background: var(--blush); }
+  .tab[aria-selected="true"] { color: var(--berry); background: var(--blush-2); }
+
+  /* ส่วนเนื้อหา ไม่ใส่กรอบการ์ด ใช้เส้นประแบบสมุด */
+  .block { padding: 4px 0 24px; margin-bottom: 24px; border-bottom: 2px dotted var(--pink); }
+  .block:last-child { border-bottom: 0; }
+
+  label { display: block; font-size: .88rem; color: var(--mauve); margin-bottom: 2px; }
+  input[type="text"], input[type="datetime-local"], input[type="time"], select {
+    width: 100%; background: var(--blush); border: 0; border-bottom: 3px solid var(--line);
+    border-radius: 12px 12px 0 0; padding: 7px 12px; font-size: 1rem;
+  }
+  input:focus, select:focus { outline: none; border-bottom-color: var(--pink-strong); background: var(--blush-2); }
+  input::placeholder { color: #BFA0AD; }
+  textarea {
+    width: 100%; min-height: 96px; resize: vertical; background: var(--blush); border: 2px dotted var(--pink);
+    border-radius: 16px; padding: 12px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: .82rem;
+  }
+  .grid { display: grid; gap: 16px 18px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); align-items: end; }
+  .row { display: flex; gap: 8px 14px; flex-wrap: wrap; align-items: center; }
+  .check { display: flex; align-items: center; gap: 8px; color: var(--berry); font-size: 1rem; margin: 0; }
+  .check input { accent-color: var(--pink-strong); width: 18px; height: 18px; }
+
+  .alert {
+    background: var(--blush); border: 2px dotted var(--pink); border-radius: 18px;
+    padding: 12px 18px; margin-bottom: 22px;
+  }
+  .alert[hidden] { display: none; }
+
+  .toolbar { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; justify-content: space-between; margin-bottom: 6px; }
+  .seg { display: flex; gap: 8px; }
+  .seg button {
+    background: none; border: 0; padding: 1px 12px; cursor: pointer; color: var(--mauve); font-size: .95rem; border-radius: 999px;
+  }
+  .seg button:hover { background: var(--blush); }
+  .seg button[aria-pressed="true"] { color: var(--berry); font-weight: 700; background: var(--blush-2); }
+  .summary { color: var(--mauve); font-size: .95rem; margin: 8px 0 4px; }
+
+  /* รายการงาน แต่ละแถวเหมือนบรรทัดในสมุด */
+  ul.list { list-style: none; margin: 0; padding: 0; }
+  .task {
+    display: grid; grid-template-columns: 30px 1fr auto; gap: 2px 12px; align-items: start;
+    padding: 14px 0; border-bottom: 2px dotted var(--line);
+  }
+  .task input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none; width: 26px; height: 26px; margin: 3px 0 0;
+    border: 2.5px solid var(--pink); border-radius: 50%; background: var(--paper); cursor: pointer; position: relative;
+  }
+  .task input[type="checkbox"]:hover { background: var(--blush); }
+  .task input[type="checkbox"]:checked { background: var(--pink-strong); border-color: var(--pink-strong); }
+  .task input[type="checkbox"]:checked::after {
+    content: ""; position: absolute; left: 7px; top: 2px; width: 6px; height: 12px;
+    border: solid #fff; border-width: 0 3px 3px 0; border-radius: 1px; transform: rotate(45deg);
+  }
+  .subj { font-size: .88rem; color: var(--mauve); }
+  .ttl { font-weight: 700; word-break: break-word; }
+  .today .ttl, .late .ttl { font-size: 1.05rem; }
+  .due { font-size: .9rem; color: var(--mauve); }
+  .count {
+    font-weight: 700; font-size: .85rem; white-space: nowrap; padding: 2px 13px; border-radius: 999px;
+    border: 2px solid var(--line); color: var(--mauve); font-variant-numeric: tabular-nums;
+  }
+  .soon .count { background: var(--blush-2); border-color: var(--blush-2); color: var(--berry); }
+  .today .count { background: var(--pink-strong); border-color: var(--pink-strong); color: #fff; }
+  .late .count { background: var(--berry); border-color: var(--berry); color: #fff; }
+  .done .count { border-style: dashed; }
+  .done .ttl { text-decoration: line-through; color: var(--mauve); font-weight: 400; }
+  .acts { grid-column: 2 / -1; display: flex; gap: 8px; margin-top: 4px; }
+  .empty { color: var(--mauve); padding: 18px 0; text-align: center; }
+  .empty svg { width: 130px; height: auto; }
+
+  /* ปฏิทิน */
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 8px; }
+  .cal-head h2 { margin: 0; }
+  .cal-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr); border-top: 2px solid var(--line); border-left: 2px solid var(--line);
+    border-radius: 16px; overflow: hidden;
+  }
+  .dow { text-align: center; font-size: .85rem; color: var(--mauve); padding: 4px 0; border-right: 2px solid var(--line); border-bottom: 2px solid var(--line); background: var(--blush); }
+  .cell {
+    min-height: 64px; background: var(--paper); border: 0; border-right: 2px solid var(--line); border-bottom: 2px solid var(--line);
+    border-radius: 0; padding: 5px 6px; cursor: pointer; text-align: left;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  }
+  .cell:hover { background: var(--blush); }
+  .cell.blank { cursor: default; background: var(--paper); }
+  .cell.blank:hover { background: var(--paper); }
+  .cell.sel { background: var(--blush-2); }
+  .cell .n { font-weight: 700; font-size: .95rem; min-width: 28px; height: 28px; display: inline-grid; place-items: center; }
+  .cell .has-class { text-decoration: underline wavy var(--pink-strong); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+  .today-cell .n { border: 2px solid var(--pink-strong); border-radius: 50%; }
+  .dots { display: flex; gap: 3px; flex-wrap: wrap; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--pink); background: var(--paper); }
+  .dot.soon { background: var(--blush-2); border-color: var(--pink); }
+  .dot.today { background: var(--pink-strong); border-color: var(--pink-strong); }
+  .dot.late { background: var(--berry); border-color: var(--berry); }
+  .dot.done { border-color: var(--line); }
+  .more { font-size: .7rem; color: var(--mauve); }
+  .legend { margin-top: 10px; }
+  .day-item { padding: 8px 0; border-top: 2px dotted var(--line); }
+  .day-item:first-of-type { border-top: 0; }
+
+  /* ตารางเรียน */
+  .class-item { display: flex; justify-content: space-between; gap: 10px; align-items: center; padding: 10px 0; border-top: 2px dotted var(--line); }
+  .class-item:first-of-type { border-top: 0; }
+  .tag { font-size: .8rem; font-weight: 700; background: var(--blush-2); border-radius: 999px; padding: 1px 12px; margin-left: 8px; }
+
+  .msg { margin-top: 10px; font-size: .95rem; }
+  .msg.err { color: var(--pink-strong); font-weight: 700; }
+  .msg.good { color: var(--berry); font-weight: 700; }
+
+  .help { margin: -8px 0 18px; font-size: .9rem; color: var(--mauve); }
+  .help summary { cursor: pointer; width: fit-content; }
+  .help ol { margin: 8px 0 0; padding-left: 22px; }
+  .help li { margin-bottom: 4px; }
+
+  #toasts { position: fixed; right: 12px; bottom: 12px; left: 12px; max-width: 380px; margin-left: auto; display: grid; gap: 8px; z-index: 50; }
+  .toast { background: var(--berry); color: #fff; border-radius: 16px; padding: 11px 16px; cursor: pointer; font-size: .95rem; border-left: 8px solid var(--pink); }
+
+  @media (max-width: 560px) {
+    h1 { font-size: 1.8rem; }
+    .task { grid-template-columns: 30px 1fr; }
+    .count { grid-column: 2; justify-self: start; margin-top: 6px; }
+    .cell { min-height: 54px; padding: 3px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brand">
+        <h1>Homework List</h1>
+        <svg class="doodle" viewBox="0 0 64 44" width="58" height="40" aria-hidden="true">
+          <g transform="translate(2 10) scale(1.25) rotate(-12 12 12)"><path fill="#D6245F" d="M12 21s-7.5-4.6-9.6-9.3C.9 8.2 3 4.5 6.6 4.5c2 0 3.6 1.1 4.4 2.5.8-1.4 2.4-2.5 4.4-2.5 3.6 0 5.7 3.7 4.2 7.2C19.5 16.4 12 21 12 21z"/></g>
+          <g transform="translate(34 0) scale(.9)"><path fill="#F06A9B" d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10Z"/></g>
+          <g transform="translate(48 22) scale(.5)"><path fill="#F06A9B" d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10Z"/></g>
+        </svg>
+      </div>
+      <p class="sub">ส่งงานและตารางเรียน</p>
+    </div>
+    <div class="row">
+      <button id="testBtn" class="btn ghost small" type="button" hidden>ทดสอบการแจ้งเตือน</button>
+      <button id="notifBtn" class="btn ghost small" type="button">เปิดการแจ้งเตือน</button>
+    </div>
+  </header>
+  <details class="help" id="macHelp">
+    <summary>แจ้งเตือนบน Mac ไม่ขึ้น?</summary>
+    <ol>
+      <li>กดปุ่ม "เปิดการแจ้งเตือน" แล้วเลือก อนุญาต (Allow) ในหน้าต่างของเบราว์เซอร์</li>
+      <li>เปิด การตั้งค่าระบบ (System Settings) &gt; การแจ้งเตือน (Notifications) แล้วหาชื่อเบราว์เซอร์ที่ใช้ (Chrome, Safari, Edge) เปิด "อนุญาตการแจ้งเตือน"</li>
+      <li>ถ้าเปิดโหมดโฟกัสหรือห้ามรบกวนอยู่ การแจ้งเตือนจะไม่เด้ง ให้ปิดโหมดนั้นชั่วคราว</li>
+      <li>กดปุ่ม "ทดสอบการแจ้งเตือน" ถ้าเห็นแจ้งเตือนที่มุมขวาบนของจอ แปลว่าใช้ได้แล้ว</li>
+      <li>เปิดผ่าน Live Server (localhost) จะเสถียรกว่าเปิดไฟล์ตรงๆ โดยเฉพาะบน Safari</li>
+    </ol>
+  </details>
+
+  <nav class="tabs" role="tablist" aria-label="เมนูหลัก">
+    <button class="tab" role="tab" data-tab="tasks" aria-selected="true">งานทั้งหมด</button>
+    <button class="tab" role="tab" data-tab="calendar" aria-selected="false">ปฏิทิน</button>
+    <button class="tab" role="tab" data-tab="classes" aria-selected="false">ตารางเรียน</button>
+    <button class="tab" role="tab" data-tab="share" aria-selected="false">แชร์กับเพื่อน</button>
+  </nav>
+
+  <!-- งานทั้งหมด -->
+  <section id="tab-tasks" role="tabpanel">
+    <div id="alert" class="alert" role="alert" hidden></div>
+
+    <form id="taskForm" class="block" autocomplete="off">
+      <h2 id="formTitle">เพิ่มงานใหม่</h2>
+      <div class="grid">
+        <div>
+          <label for="fSubject">วิชา</label>
+          <input id="fSubject" type="text" list="subjectList" placeholder="เช่น คณิตศาสตร์" required maxlength="80">
+          <datalist id="subjectList"></datalist>
+        </div>
+        <div>
+          <label for="fTitle">ชื่องาน</label>
+          <input id="fTitle" type="text" placeholder="เช่น รายงานบทที่ 2" required maxlength="120">
+        </div>
+        <div>
+          <label for="fDue">กำหนดส่ง</label>
+          <input id="fDue" type="datetime-local" required>
+        </div>
+        <div class="row">
+          <button class="btn" id="fSubmit" type="submit">เพิ่มงาน</button>
+          <button class="btn ghost" id="fCancel" type="button" hidden>ยกเลิก</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="กรองสถานะ">
+        <button type="button" data-status="pending" aria-pressed="true">ยังไม่ส่ง</button>
+        <button type="button" data-status="done" aria-pressed="false">ส่งแล้ว</button>
+        <button type="button" data-status="all" aria-pressed="false">ทั้งหมด</button>
+      </div>
+      <div style="min-width:170px">
+        <label for="subjectFilter">กรองตามวิชา</label>
+        <select id="subjectFilter"><option value="">ทุกวิชา</option></select>
+      </div>
+    </div>
+    <p id="summary" class="summary"></p>
+    <ul id="taskList" class="list"></ul>
+  </section>
+
+  <!-- ปฏิทิน -->
+  <section id="tab-calendar" role="tabpanel" hidden>
+    <div class="block">
+      <div class="cal-head">
+        <button class="btn ghost small" id="calPrev" type="button" aria-label="เดือนก่อนหน้า">ก่อนหน้า</button>
+        <h2 id="calTitle"></h2>
+        <button class="btn ghost small" id="calNext" type="button" aria-label="เดือนถัดไป">ถัดไป</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <p class="sub legend">จุดคือเดดไลน์ของงาน (ยิ่งเข้มยิ่งใกล้กำหนด) ตัวเลขที่ขีดเส้นใต้คือวันที่มีเรียน</p>
+    </div>
+    <div class="block" id="dayPanel"></div>
+  </section>
+
+  <!-- ตารางเรียน -->
+  <section id="tab-classes" role="tabpanel" hidden>
+    <form id="classForm" class="block" autocomplete="off">
+      <h2>เพิ่มคาบเรียน</h2>
+      <div class="grid">
+        <div>
+          <label for="cSubject">วิชา</label>
+          <input id="cSubject" type="text" list="subjectList" required maxlength="80">
+        </div>
+        <div>
+          <label for="cDay">วัน</label>
+          <select id="cDay"></select>
+        </div>
+        <div>
+          <label for="cStart">เวลาเริ่ม</label>
+          <input id="cStart" type="time" required>
+        </div>
+        <div>
+          <label for="cEnd">เวลาเลิก (ไม่บังคับ)</label>
+          <input id="cEnd" type="time">
+        </div>
+        <div>
+          <label for="cRoom">ห้อง (ไม่บังคับ)</label>
+          <input id="cRoom" type="text" maxlength="40">
+        </div>
+        <div>
+          <label for="cRemind">เตือนก่อนเข้าเรียน</label>
+          <select id="cRemind">
+            <option value="10">10 นาที</option>
+            <option value="15">15 นาที</option>
+            <option value="30" selected>30 นาที</option>
+            <option value="60">1 ชั่วโมง</option>
+          </select>
+        </div>
+        <div><button class="btn" type="submit">เพิ่มคาบเรียน</button></div>
+      </div>
+    </form>
+    <div class="block" id="classList"></div>
+  </section>
+
+  <!-- แชร์ -->
+  <section id="tab-share" role="tabpanel" hidden>
+    <div class="block">
+      <h2>แชร์ให้เพื่อน</h2>
+      <div class="row" style="margin-bottom:12px">
+        <label class="check"><input type="checkbox" id="incTasks" checked> งานที่ยังไม่ส่ง</label>
+        <label class="check"><input type="checkbox" id="incClasses"> ตารางเรียน</label>
+      </div>
+      <textarea id="exportBox" readonly aria-label="รหัสสำหรับแชร์"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="copyBtn" type="button">คัดลอกรหัส</button>
+      </div>
+      <p id="copyMsg" class="msg" aria-live="polite"></p>
+    </div>
+    <div class="block">
+      <h2>รับรหัสจากเพื่อน</h2>
+      <textarea id="importBox" placeholder="วางรหัสที่ขึ้นต้นด้วย WORK: ตรงนี้" aria-label="รหัสที่ได้รับจากเพื่อน"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="importBtn" type="button">เพิ่มเข้าในรายการของฉัน</button>
+      </div>
+      <p id="importMsg" class="msg" aria-live="polite"></p>
+    </div>
+  </section>
+
+</div>
+
+<div id="toasts" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- ค่าคงที่และตัวช่วย ---------- */
+  var KEY = 'nlsn-v1';
+  var DAY = 864e5, HOUR = 36e5, MIN = 6e4;
+  var DAYS_SHORT = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
+  var DAYS_FULL = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+  var MONTHS = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+                'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+  function $(s) { return document.querySelector(s); }
+  function $all(s) { return Array.prototype.slice.call(document.querySelectorAll(s)); }
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function keyOf(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function toInputValue(d) { return keyOf(d) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function dueLabel(d) {
+    return d.toLocaleDateString('th-TH', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }) +
+           ' เวลา ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+  function span(ms) {
+    var a = Math.abs(ms);
+    var d = Math.floor(a / DAY), h = Math.floor((a % DAY) / HOUR), m = Math.floor((a % HOUR) / MIN);
+    if (d > 0) return d + ' วัน ' + h + ' ชม.';
+    if (h > 0) return h + ' ชม. ' + m + ' นาที';
+    return Math.max(m, 0) + ' นาที';
+  }
+  function urgency(t, now) {
+    if (t.done) return 'done';
+    var diff = new Date(t.due) - now;
+    if (diff < 0) return 'late';
+    if (diff <= DAY) return 'today';
+    if (diff <= 3 * DAY) return 'soon';
+    return 'ok';
+  }
+  function countText(t, now) {
+    if (t.done) return 'ส่งแล้ว';
+    var diff = new Date(t.due) - now;
+    return (diff < 0 ? 'เลยกำหนด ' : 'เหลือ ') + span(diff);
+  }
+
+  /* ---------- ข้อมูล (เก็บในเบราว์เซอร์ด้วย localStorage) ---------- */
+  var state = load();
+  function load() {
+    var base = { tasks: [], classes: [], fired: {} };
+    try {
+      var s = JSON.parse(localStorage.getItem(KEY));
+      if (s && typeof s === 'object') return Object.assign(base, s);
+    } catch (e) { /* ใช้ค่าเริ่มต้น */ }
+    return base;
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* เก็บไม่ได้ ก็ใช้ต่อในหน้านี้ */ }
+  }
+
+  /* ---------- การแจ้งเตือน ---------- */
+  function toast(title, body) {
+    var el = document.createElement('div');
+    el.className = 'toast';
+    var b = document.createElement('strong');
+    b.textContent = title;
+    el.appendChild(b);
+    if (body) el.appendChild(document.createTextNode(' ' + body));
+    el.addEventListener('click', function () { el.remove(); });
+    $('#toasts').appendChild(el);
+    setTimeout(function () { el.remove(); }, 9000);
+  }
+  function systemNotify(title, body) {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try {
+        var n = new Notification(title, { body: body, tag: title + body, lang: 'th', requireInteraction: true });
+        n.onclick = function () { window.focus(); n.close(); };
+      } catch (e) { /* ข้ามไป */ }
+    }
+  }
+  function updateNotifBtn() {
+    var btn = $('#notifBtn');
+    if (!('Notification' in window)) { btn.hidden = true; $('#testBtn').hidden = true; return; }
+    $('#testBtn').hidden = Notification.permission !== 'granted';
+    $('#macHelp').open = Notification.permission === 'denied';
+    if (Notification.permission === 'granted') { btn.textContent = 'การแจ้งเตือนเปิดอยู่'; btn.disabled = true; }
+    else if (Notification.permission === 'denied') { btn.textContent = 'เบราว์เซอร์บล็อกการแจ้งเตือน'; btn.disabled = true; }
+    else { btn.textContent = 'เปิดการแจ้งเตือน'; btn.disabled = false; }
+  }
+  $('#notifBtn').addEventListener('click', function () {
+    try {
+      var r = Notification.requestPermission(updateNotifBtn);
+      if (r && r.then) r.then(updateNotifBtn);
+    } catch (e) { updateNotifBtn(); }
+  });
+
+  $('#testBtn').addEventListener('click', function () {
+    systemNotify('Homework List', 'ทดสอบการแจ้งเตือน ถ้าเห็นข้อความนี้ที่มุมจอ แปลว่าใช้ได้แล้ว');
+    toast('ส่งการแจ้งเตือนทดสอบแล้ว', 'ถ้าไม่เห็นที่มุมจอ ดูวิธีแก้ด้านล่างปุ่ม');
+  });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) checkReminders(); });
+
+  function checkReminders() {
+    var now = new Date();
+    var msgs = [];
+    var changed = false;
+
+    state.tasks.forEach(function (t) {
+      if (t.done) return;
+      var due = new Date(t.due);
+      if (isNaN(due)) return;
+      var morning = new Date(due.getFullYear(), due.getMonth(), due.getDate(), 8, 0);
+      var steps = [
+        { k: '3d', at: new Date(due - 3 * DAY), text: 'อีก 3 วันถึงกำหนดส่ง' },
+        { k: '1d', at: new Date(due - DAY), text: 'อีก 1 วันถึงกำหนดส่ง' },
+        { k: 'am', at: morning, text: 'วันนี้ต้องส่ง ภายในเวลา ' + pad(due.getHours()) + ':' + pad(due.getMinutes()) }
+      ].filter(function (s) { return s.at <= now && now < due; })
+       .sort(function (a, b) { return a.at - b.at; });
+
+      if (steps.length) {
+        var last = steps[steps.length - 1];
+        if (!state.fired[t.id + ':' + last.k]) msgs.push([t.subject + ': ' + t.title, last.text]);
+        steps.forEach(function (s) {
+          if (!state.fired[t.id + ':' + s.k]) { state.fired[t.id + ':' + s.k] = 1; changed = true; }
+        });
+      }
+      if (now >= due && !state.fired[t.id + ':late']) {
+        state.fired[t.id + ':late'] = 1; changed = true;
+        msgs.push([t.subject + ': ' + t.title, 'เลยกำหนดส่งแล้ว']);
+      }
+    });
+
+    var today = keyOf(now);
+    state.classes.forEach(function (c) {
+      if (c.day !== now.getDay()) return;
+      var p = c.start.split(':');
+      var start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), +p[0], +p[1]);
+      var at = new Date(start - (c.remind || 30) * MIN);
+      var k = 'c' + c.id + ':' + today;
+      if (now >= at && now < start && !state.fired[k]) {
+        state.fired[k] = 1; changed = true;
+        msgs.push(['อีก ' + span(start - now) + ' เข้าเรียน', c.subject + (c.room ? ' ห้อง ' + c.room : '')]);
+      }
+    });
+
+    if (changed) save();
+    msgs.forEach(function (m, i) {
+      systemNotify(m[0], m[1]);
+      if (i < 4) toast(m[0], m[1]);
+    });
+    if (msgs.length > 4) toast('และอีก ' + (msgs.length - 4) + ' รายการ', 'ดูในหน้างานทั้งหมด');
+  }
+
+  /* ---------- แท็บ ---------- */
+  function showTab(name) {
+    $all('.tab').forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.tab === name)); });
+    ['tasks', 'calendar', 'classes', 'share'].forEach(function (n) { $('#tab-' + n).hidden = n !== name; });
+    if (name === 'calendar') renderCalendar();
+    if (name === 'classes') renderClasses();
+    if (name === 'share') renderShare();
+  }
+  $all('.tab').forEach(function (b) { b.addEventListener('click', function () { showTab(b.dataset.tab); }); });
+
+  /* รูปสมุดยิ้มได้ แสดงตอนยังไม่มีงานเลย */
+  var EMPTY_SVG =
+    '<svg viewBox="0 0 120 110" aria-hidden="true">' +
+    '<rect x="24" y="14" width="72" height="84" rx="14" fill="#FFF1F6" stroke="#3D1427" stroke-width="3"/>' +
+    '<g stroke="#D6245F" stroke-width="4" stroke-linecap="round"><line x1="17" y1="34" x2="32" y2="34"/><line x1="17" y1="54" x2="32" y2="54"/><line x1="17" y1="74" x2="32" y2="74"/></g>' +
+    '<circle cx="52" cy="52" r="3.6" fill="#3D1427"/><circle cx="74" cy="52" r="3.6" fill="#3D1427"/>' +
+    '<ellipse cx="45" cy="63" rx="6" ry="4" fill="#F06A9B" opacity=".5"/><ellipse cx="81" cy="63" rx="6" ry="4" fill="#F06A9B" opacity=".5"/>' +
+    '<path d="M55 63 Q63 72 71 63" fill="none" stroke="#3D1427" stroke-width="3" stroke-linecap="round"/>' +
+    '<g transform="translate(86 2) scale(.8)"><path fill="#D6245F" d="M12 21s-7.5-4.6-9.6-9.3C.9 8.2 3 4.5 6.6 4.5c2 0 3.6 1.1 4.4 2.5.8-1.4 2.4-2.5 4.4-2.5 3.6 0 5.7 3.7 4.2 7.2C19.5 16.4 12 21 12 21z"/></g>' +
+    '<g transform="translate(4 84) scale(.6)"><path fill="#F06A9B" d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10Z"/></g>' +
+    '</svg>';
+
+  /* ---------- งานทั้งหมด ---------- */
+  var statusFilter = 'pending';
+  var editingId = null;
+
+  function defaultDue() {
+    var d = new Date(Date.now() + DAY);
+    d.setHours(23, 59, 0, 0);
+    return toInputValue(d);
+  }
+  function resetForm(keepSubject) {
+    editingId = null;
+    if (!keepSubject) $('#fSubject').value = '';
+    $('#fTitle').value = '';
+    $('#fDue').value = defaultDue();
+    $('#formTitle').textContent = 'เพิ่มงานใหม่';
+    $('#fSubmit').textContent = 'เพิ่มงาน';
+    $('#fCancel').hidden = true;
+  }
+
+  $('#taskForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var subject = $('#fSubject').value.trim();
+    var title = $('#fTitle').value.trim();
+    var due = $('#fDue').value;
+    if (!subject || !title || !due) return;
+    if (editingId) {
+      var t = state.tasks.find(function (x) { return x.id === editingId; });
+      if (t) { t.subject = subject; t.title = title; t.due = due; }
+      Object.keys(state.fired).forEach(function (k) { if (k.indexOf(editingId + ':') === 0) delete state.fired[k]; });
+    } else {
+      state.tasks.push({ id: uid(), subject: subject, title: title, due: due, done: false, createdAt: Date.now() });
+    }
+    save();
+    resetForm(true);
+    renderTasks();
+    checkReminders();
+    $('#fTitle').focus();
+  });
+  $('#fCancel').addEventListener('click', function () { resetForm(false); });
+
+  $all('.seg button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      statusFilter = b.dataset.status;
+      $all('.seg button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      renderTasks();
+    });
+  });
+  $('#subjectFilter').addEventListener('change', renderTasks);
+
+  $('#taskList').addEventListener('click', function (e) {
+    var li = e.target.closest('li[data-id]');
+    if (!li) return;
+    var t = state.tasks.find(function (x) { return x.id === li.dataset.id; });
+    if (!t) return;
+    var act = e.target.dataset.act;
+    if (act === 'del') {
+      if (confirm('ลบงาน "' + t.title + '" ใช่ไหม')) {
+        state.tasks = state.tasks.filter(function (x) { return x.id !== t.id; });
+        save(); renderTasks();
+      }
+    } else if (act === 'edit') {
+      editingId = t.id;
+      $('#fSubject').value = t.subject;
+      $('#fTitle').value = t.title;
+      $('#fDue').value = t.due;
+      $('#formTitle').textContent = 'แก้ไขงาน';
+      $('#fSubmit').textContent = 'บันทึกการแก้ไข';
+      $('#fCancel').hidden = false;
+      $('#fTitle').focus();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+  $('#taskList').addEventListener('change', function (e) {
+    if (e.target.type !== 'checkbox') return;
+    var li = e.target.closest('li[data-id]');
+    var t = li && state.tasks.find(function (x) { return x.id === li.dataset.id; });
+    if (t) { t.done = e.target.checked; save(); renderTasks(); }
+  });
+
+  function subjects() {
+    var set = {};
+    state.tasks.forEach(function (t) { set[t.subject] = 1; });
+    state.classes.forEach(function (c) { set[c.subject] = 1; });
+    return Object.keys(set).sort(function (a, b) { return a.localeCompare(b, 'th'); });
+  }
+
+  function renderTasks() {
+    var now = Date.now();
+    var subs = subjects();
+
+    $('#subjectList').innerHTML = subs.map(function (s) { return '<option value="' + esc(s) + '">'; }).join('');
+    var sel = $('#subjectFilter'), cur = sel.value;
+    var taskSubs = {};
+    state.tasks.forEach(function (t) { taskSubs[t.subject] = 1; });
+    sel.innerHTML = '<option value="">ทุกวิชา</option>' + Object.keys(taskSubs)
+      .sort(function (a, b) { return a.localeCompare(b, 'th'); })
+      .map(function (s) { return '<option value="' + esc(s) + '">' + esc(s) + '</option>'; }).join('');
+    sel.value = taskSubs[cur] ? cur : '';
+
+    var pending = state.tasks.filter(function (t) { return !t.done; });
+    var late = pending.filter(function (t) { return new Date(t.due) < now; }).length;
+    $('#summary').textContent = 'ยังไม่ส่ง ' + pending.length + ' งาน' + (late ? ', เลยกำหนด ' + late + ' งาน' : '');
+
+    var urgent = pending.filter(function (t) { return new Date(t.due) - now <= DAY; })
+      .sort(function (a, b) { return new Date(a.due) - new Date(b.due); });
+    var box = $('#alert');
+    if (urgent.length) {
+      var names = urgent.slice(0, 3).map(function (t) { return esc(t.subject + ': ' + t.title); }).join('<br>');
+      box.innerHTML = '<strong>มี ' + urgent.length + ' งานที่เลยกำหนดหรือต้องส่งภายใน 24 ชั่วโมง</strong><br>' + names +
+        (urgent.length > 3 ? '<br>และอีก ' + (urgent.length - 3) + ' งาน' : '');
+      box.hidden = false;
+    } else { box.hidden = true; }
+    document.title = (urgent.length ? '(' + urgent.length + ') ' : '') + 'Homework List';
+
+    var list = state.tasks.filter(function (t) {
+      if (statusFilter === 'pending' && t.done) return false;
+      if (statusFilter === 'done' && !t.done) return false;
+      if (sel.value && t.subject !== sel.value) return false;
+      return true;
+    }).sort(function (a, b) {
+      if (a.done !== b.done) return a.done ? 1 : -1;
+      var d = new Date(a.due) - new Date(b.due);
+      return a.done ? -d : d;
+    });
+
+    if (!list.length) {
+      $('#taskList').innerHTML = state.tasks.length
+        ? '<li class="empty">ไม่มีงานในตัวกรองนี้</li>'
+        : '<li class="empty">' + EMPTY_SVG + '</li>';
+      return;
+    }
+    $('#taskList').innerHTML = list.map(function (t) {
+      var u = urgency(t, now);
+      return '<li class="task ' + u + '" data-id="' + esc(t.id) + '">' +
+        '<input type="checkbox" ' + (t.done ? 'checked ' : '') + 'aria-label="ส่งงานนี้แล้ว">' +
+        '<div><div class="subj">' + esc(t.subject) + '</div><div class="ttl">' + esc(t.title) + '</div>' +
+        '<div class="due">กำหนดส่ง ' + esc(dueLabel(new Date(t.due))) + '</div></div>' +
+        '<div class="count">' + esc(countText(t, now)) + '</div>' +
+        '<div class="acts"><button type="button" class="btn ghost small" data-act="edit">แก้ไข</button>' +
+        '<button type="button" class="btn ghost small danger" data-act="del">ลบ</button></div></li>';
+    }).join('');
+  }
+
+  /* ---------- ปฏิทิน ---------- */
+  var nowD = new Date();
+  var cal = { y: nowD.getFullYear(), m: nowD.getMonth(), sel: keyOf(nowD) };
+
+  $('#calPrev').addEventListener('click', function () { cal.m--; if (cal.m < 0) { cal.m = 11; cal.y--; } renderCalendar(); });
+  $('#calNext').addEventListener('click', function () { cal.m++; if (cal.m > 11) { cal.m = 0; cal.y++; } renderCalendar(); });
+  $('#calGrid').addEventListener('click', function (e) {
+    var c = e.target.closest('[data-key]');
+    if (c) { cal.sel = c.dataset.key; renderCalendar(); }
+  });
+
+  function renderCalendar() {
+    var now = Date.now(), todayKey = keyOf(new Date());
+    $('#calTitle').textContent = MONTHS[cal.m] + ' ' + (cal.y + 543);
+
+    var byDay = {};
+    state.tasks.forEach(function (t) {
+      var k = t.due.slice(0, 10);
+      (byDay[k] = byDay[k] || []).push(t);
+    });
+    var classDays = {};
+    state.classes.forEach(function (c) { classDays[c.day] = true; });
+
+    var html = DAYS_SHORT.map(function (d) { return '<div class="dow">' + d + '</div>'; }).join('');
+    var first = new Date(cal.y, cal.m, 1).getDay();
+    var total = new Date(cal.y, cal.m + 1, 0).getDate();
+    for (var i = 0; i < first; i++) html += '<div class="cell blank"></div>';
+    for (var d = 1; d <= total; d++) {
+      var date = new Date(cal.y, cal.m, d), k = keyOf(date);
+      var ts = byDay[k] || [];
+      var dots = ts.slice(0, 3).map(function (t) { return '<span class="dot ' + urgency(t, now) + '"></span>'; }).join('');
+      var cls = 'cell' + (k === todayKey ? ' today-cell' : '') + (k === cal.sel ? ' sel' : '');
+      html += '<button type="button" class="' + cls + '" data-key="' + k + '" aria-label="' + d + ' ' + MONTHS[cal.m] +
+        (ts.length ? ' มี ' + ts.length + ' งาน' : '') + '">' +
+        '<span class="n' + (classDays[date.getDay()] ? ' has-class' : '') + '">' + d + '</span>' +
+        '<span class="dots">' + dots + (ts.length > 3 ? '<span class="more">+' + (ts.length - 3) + '</span>' : '') + '</span></button>';
+    }
+    $('#calGrid').innerHTML = html;
+
+    var p = cal.sel.split('-');
+    var sd = new Date(+p[0], +p[1] - 1, +p[2]);
+    var dayTasks = (byDay[cal.sel] || []).slice().sort(function (a, b) { return new Date(a.due) - new Date(b.due); });
+    var dayClasses = state.classes.filter(function (c) { return c.day === sd.getDay(); })
+      .sort(function (a, b) { return a.start.localeCompare(b.start); });
+
+    var out = '<h2>วัน' + DAYS_FULL[sd.getDay()] + 'ที่ ' + sd.getDate() + ' ' + MONTHS[sd.getMonth()] + ' ' + (sd.getFullYear() + 543) + '</h2>';
+    out += '<h3>งานที่ต้องส่ง</h3>';
+    out += dayTasks.length ? dayTasks.map(function (t) {
+      var dd = new Date(t.due);
+      return '<div class="day-item"><div class="subj">' + esc(t.subject) + '</div><div class="ttl">' + esc(t.title) +
+        '</div><div class="due">ภายในเวลา ' + pad(dd.getHours()) + ':' + pad(dd.getMinutes()) + ' ' +
+        (t.done ? '(ส่งแล้ว)' : '(' + esc(countText(t, now)) + ')') + '</div></div>';
+    }).join('') : '<p class="sub" style="margin:6px 0 12px">ไม่มีงานที่ต้องส่งในวันนี้</p>';
+    out += '<h3 style="margin-top:14px">คาบเรียน</h3>';
+    out += dayClasses.length ? dayClasses.map(function (c) {
+      return '<div class="day-item"><div class="ttl">' + esc(c.subject) + '</div><div class="due">' + esc(c.start) +
+        (c.end ? ' - ' + esc(c.end) : '') + (c.room ? ' ห้อง ' + esc(c.room) : '') + '</div></div>';
+    }).join('') : '<p class="sub" style="margin-top:6px">ไม่มีเรียนในวันนี้</p>';
+    $('#dayPanel').innerHTML = out;
+  }
+
+  /* ---------- ตารางเรียน ---------- */
+  $('#cDay').innerHTML = DAYS_FULL.map(function (d, i) { return '<option value="' + i + '">' + d + '</option>'; }).join('');
+  $('#cDay').value = '1';
+
+  $('#classForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var subject = $('#cSubject').value.trim();
+    if (!subject || !$('#cStart').value) return;
+    state.classes.push({
+      id: uid(), subject: subject, day: +$('#cDay').value, start: $('#cStart').value,
+      end: $('#cEnd').value, room: $('#cRoom').value.trim(), remind: +$('#cRemind').value
+    });
+    save();
+    $('#cSubject').value = ''; $('#cRoom').value = ''; $('#cStart').value = ''; $('#cEnd').value = '';
+    renderClasses();
+    renderTasks();
+    $('#cSubject').focus();
+  });
+  $('#classList').addEventListener('click', function (e) {
+    if (e.target.dataset.act !== 'delClass') return;
+    var id = e.target.dataset.id;
+    var c = state.classes.find(function (x) { return x.id === id; });
+    if (c && confirm('ลบคาบเรียน "' + c.subject + '" ใช่ไหม')) {
+      state.classes = state.classes.filter(function (x) { return x.id !== id; });
+      save(); renderClasses();
+    }
+  });
+
+  function renderClasses() {
+    if (!state.classes.length) {
+      $('#classList').innerHTML = '<p class="empty" style="padding:0">ยังไม่มีคาบเรียน เพิ่มในฟอร์มด้านบนเพื่อรับการเตือนก่อนเข้าเรียน</p>';
+      return;
+    }
+    var today = new Date().getDay(), html = '';
+    for (var i = 0; i < 7; i++) {
+      var day = (i + 1) % 7; // เริ่มที่วันจันทร์
+      var cs = state.classes.filter(function (c) { return c.day === day; })
+        .sort(function (a, b) { return a.start.localeCompare(b.start); });
+      if (!cs.length) continue;
+      html += '<h3 style="margin-top:' + (html ? '18px' : '0') + '">' + DAYS_FULL[day] +
+        (day === today ? '<span class="tag">วันนี้</span>' : '') + '</h3>';
+      html += cs.map(function (c) {
+        return '<div class="class-item"><div><div class="ttl">' + esc(c.subject) + '</div><div class="due">' +
+          esc(c.start) + (c.end ? ' - ' + esc(c.end) : '') + (c.room ? ' ห้อง ' + esc(c.room) : '') +
+          ' (เตือนก่อน ' + (c.remind >= 60 ? '1 ชม.' : c.remind + ' นาที') + ')</div></div>' +
+          '<button type="button" class="btn ghost small danger" data-act="delClass" data-id="' + esc(c.id) + '">ลบ</button></div>';
+      }).join('');
+    }
+    $('#classList').innerHTML = html;
+  }
+
+  /* ---------- แชร์กับเพื่อน (ไม่ต้องใช้เซิร์ฟเวอร์ ส่งเป็นรหัสข้อความ) ---------- */
+  function encode(obj) {
+    var bytes = new TextEncoder().encode(JSON.stringify(obj)), bin = '';
+    bytes.forEach(function (b) { bin += String.fromCharCode(b); });
+    return btoa(bin);
+  }
+  function decode(str) {
+    var bin = atob(str.replace(/\s+/g, ''));
+    var bytes = Uint8Array.from(bin, function (c) { return c.charCodeAt(0); });
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+  function renderShare() {
+    var p = { v: 1 };
+    if ($('#incTasks').checked) {
+      p.tasks = state.tasks.filter(function (t) { return !t.done; })
+        .map(function (t) { return { id: t.id, subject: t.subject, title: t.title, due: t.due }; });
+    }
+    if ($('#incClasses').checked) {
+      p.classes = state.classes.map(function (c) {
+        return { id: c.id, subject: c.subject, day: c.day, start: c.start, end: c.end, room: c.room };
+      });
+    }
+    $('#exportBox').value = 'WORK:' + encode(p);
+    $('#copyMsg').textContent = '';
+  }
+  $('#incTasks').addEventListener('change', renderShare);
+  $('#incClasses').addEventListener('change', renderShare);
+
+  $('#copyBtn').addEventListener('click', function () {
+    var box = $('#exportBox');
+    box.select();
+    var done = function () { $('#copyMsg').className = 'msg good'; $('#copyMsg').textContent = 'คัดลอกแล้ว ส่งให้เพื่อนได้เลย'; };
+    var fail = function () { $('#copyMsg').className = 'msg err'; $('#copyMsg').textContent = 'คัดลอกอัตโนมัติไม่ได้ ลองกด Ctrl+C ที่ข้อความที่เลือกไว้'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(box.value).then(done, fail);
+    else { try { document.execCommand('copy') ? done() : fail(); } catch (e) { fail(); } }
+  });
+
+  $('#importBtn').addEventListener('click', function () {
+    var msg = $('#importMsg'), raw = $('#importBox').value.trim();
+    function say(text, ok) { msg.className = 'msg ' + (ok ? 'good' : 'err'); msg.textContent = text; }
+    var prefix = raw.indexOf('WORK:') === 0 ? 'WORK:' : (raw.indexOf('NLS1:') === 0 ? 'NLS1:' : '');
+    if (!prefix) return say('รหัสไม่ถูกต้อง ต้องขึ้นต้นด้วย WORK:', false);
+    var p;
+    try { p = decode(raw.slice(prefix.length)); } catch (e) { return say('อ่านรหัสไม่ได้ ลองคัดลอกจากเพื่อนใหม่อีกครั้ง', false); }
+    if (!p || p.v !== 1) return say('รหัสนี้มาจากเวอร์ชันที่ไม่รองรับ', false);
+
+    var addedT = 0, addedC = 0;
+    (Array.isArray(p.tasks) ? p.tasks : []).forEach(function (t) {
+      if (!t || typeof t.subject !== 'string' || typeof t.title !== 'string' || typeof t.due !== 'string' || isNaN(new Date(t.due))) return;
+      var s = t.subject.slice(0, 80), ti = t.title.slice(0, 120), due = t.due.slice(0, 16);
+      var dup = state.tasks.some(function (x) { return x.id === t.id || (x.subject === s && x.title === ti && x.due === due); });
+      if (dup) return;
+      state.tasks.push({ id: typeof t.id === 'string' ? t.id.slice(0, 40) : uid(), subject: s, title: ti, due: due, done: false, createdAt: Date.now() });
+      addedT++;
+    });
+    (Array.isArray(p.classes) ? p.classes : []).forEach(function (c) {
+      if (!c || typeof c.subject !== 'string' || !Number.isInteger(c.day) || c.day < 0 || c.day > 6 ||
+          typeof c.start !== 'string' || !/^\d{2}:\d{2}$/.test(c.start)) return;
+      var s = c.subject.slice(0, 80);
+      var dup = state.classes.some(function (x) { return x.subject === s && x.day === c.day && x.start === c.start; });
+      if (dup) return;
+      state.classes.push({
+        id: uid(), subject: s, day: c.day, start: c.start,
+        end: /^\d{2}:\d{2}$/.test(c.end || '') ? c.end : '',
+        room: typeof c.room === 'string' ? c.room.slice(0, 40) : '', remind: 30
+      });
+      addedC++;
+    });
+    save();
+    renderTasks();
+    renderShare();
+    say('เพิ่มงานใหม่ ' + addedT + ' งาน และคาบเรียน ' + addedC + ' คาบ (รายการที่ซ้ำกันจะถูกข้าม)', true);
+    $('#importBox').value = '';
+  });
+
+  /* ---------- เริ่มทำงาน ---------- */
+  $('#fDue').value = defaultDue();
+  updateNotifBtn();
+  renderTasks();
+  checkReminders();
+  setInterval(function () {
+    renderTasks();
+    if (!$('#tab-calendar').hidden) renderCalendar();
+    checkReminders();
+  }, 30000);
+})();
+</script>
+</body>
+</html>
